@@ -1,0 +1,18 @@
+fpPaymentTax:
+  actAs:
+    Timestampable: ~
+  columns:
+    name: {type: string(64), notnull: true}
+    country: {type: string(3), notnull: true}
+    state: {type: string(3)}
+    zip: {type: string(8)}
+    rate: {type: string(8)}
+    surcharge: {type: decimal(10), scale: 2}
+    min_product_value: {type: decimal(10), scale: 2}
+    max_product_value: {type: decimal(10), scale: 2}
+    shipping: {type: boolean, notnull: true, default: 0}
+  relations:
+#    Customer:
+#      class: sfGuardUser
+#      local: customer_id
+#      onDelete: CASCADE

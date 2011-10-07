@@ -5,7 +5,7 @@
  *
  * @package    fpPayment
  * @subpackage Tax
- * @author 	   Ton Sharp <Forma-PRO@66ton99.org.ua>
+ * @author     Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
 class fpPaymentTaxPluginConfiguration extends sfPluginConfiguration
 {

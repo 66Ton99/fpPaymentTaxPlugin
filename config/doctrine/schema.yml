@@ -1,18 +1,37 @@
 fpPaymentTax:
+  columns:
+    name: {type: string(50), notnull: true}
+    
+fpPaymentTaxToData:
+  columns:
+    tax_id: {type: integer, notnull: true}
+    data_id: {type: integer, notnull: true}
+  relations:
+    Tax:
+      class: fpPaymentTax
+      local: tax_id
+      onDelete: CASCADE
+    Data:
+      class: fpPaymentTaxData
+      local: data_id
+      onDelete: CASCADE
+  indexes:
+    tax_id_data_id:
+      type: unique
+      fields: [tax_id, data_id]
+    
+fpPaymentTaxData:
   actAs:
     Timestampable: ~
   columns:
-    name: {type: string(64), notnull: true}
-    country: {type: string(3), notnull: true}
-    state: {type: string(3)}
-    zip: {type: string(8)}
-    rate: {type: string(8)}
-    surcharge: {type: decimal(10), scale: 2}
-    min_product_value: {type: decimal(10), scale: 2}
-    max_product_value: {type: decimal(10), scale: 2}
-    shipping: {type: boolean, notnull: true, default: 0}
-  relations:
-#    Customer:
-#      class: sfGuardUser
-#      local: customer_id
-#      onDelete: CASCADE
+    country: {type: string(2), notnull: true}
+    state: {type: string(2), notnull: false}
+    zip_type: {type: enum, values: [<?php echo fpPaymentTaxDataZipTypeEnum::implode() ?>], notnull: true}
+    zip: {type: clob, notnull: false}
+    rate: {type: decimal(10), scale: 2, notnull: true}
+    min_value: {type: decimal(10), scale: 2, notnull: false}
+    max_value: {type: decimal(10), scale: 2, notnull: false}
+    surchage: {type: decimal(10), scale: 2, notnull: false}
+    shipping: {type:  boolean, notnull: true, default: 0}
+  
+

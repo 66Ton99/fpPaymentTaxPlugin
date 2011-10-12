@@ -12,5 +12,16 @@
  */
 abstract class PluginfpPaymentTaxData extends BasefpPaymentTaxData
 {
-
+  
+  /**
+   * Add tax to value
+   *
+   * @param double $value
+   *
+   * @return double
+   */
+  public function addTaxToValue($value)
+  {
+    return $value * ($this->getRate() / 100);
+  }
 }

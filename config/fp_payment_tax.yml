@@ -1,2 +1,10 @@
 all:
-  
+  context_class: fpPaymentTaxContext
+  extra_fields: []
+#    more_one:
+#      name: test
+#      alias: null
+#      type: string
+#      length: null
+#      options:
+#        notnull: true

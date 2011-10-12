@@ -7,13 +7,28 @@
  */
 class PluginfpPaymentTaxDataTable extends Doctrine_Table
 {
-    /**
-     * Returns an instance of this class.
-     *
-     * @return object PluginfpPaymentTaxDataTable
-     */
-    public static function getInstance()
-    {
-        return Doctrine_Core::getTable('PluginfpPaymentTaxData');
-    }
+
+  /**
+   * Returns an instance of this class.
+   *
+   * @return PluginfpPaymentTaxDataTable
+   */
+  public static function getInstance()
+  {
+    return Doctrine_Core::getTable('PluginfpPaymentTaxData');
+  }
+  
+	/**
+   * Get tax data value by customer profile
+   *
+   * @param fpPaymentCustomerProfile $profile
+   * @param Product $profile
+   *
+   * @return PluginfpPaymentTaxData
+   */
+  public function getTaxByProfileAndProduct($profile, $product)
+  {
+    return $this->createQuery('td')
+      ->fetchOne();
+  }
 }

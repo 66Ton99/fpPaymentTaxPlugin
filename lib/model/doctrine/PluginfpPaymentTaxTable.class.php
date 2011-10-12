@@ -11,13 +11,14 @@
  */
 class PluginfpPaymentTaxTable extends Doctrine_Table
 {
-    /**
-     * Returns an instance of this class.
-     *
-     * @return object PluginfpPaymentTaxTable
-     */
-    public static function getInstance()
-    {
-        return Doctrine_Core::getTable('PluginfpPaymentTax');
-    }
+
+  /**
+   * Returns an instance of this class.
+   *
+   * @return PluginfpPaymentTaxTable
+   */
+  public static function getInstance()
+  {
+    return Doctrine_Core::getTable('PluginfpPaymentTax');
+  }
 }

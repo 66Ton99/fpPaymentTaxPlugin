@@ -19,7 +19,7 @@ fpPaymentTaxToData:
     tax_id_data_id:
       type: unique
       fields: [tax_id, data_id]
-    
+     
 fpPaymentTaxData:
   actAs:
     Timestampable: ~
@@ -28,10 +28,12 @@ fpPaymentTaxData:
     state: {type: string(2), notnull: false}
     zip_type: {type: enum, values: [<?php echo fpPaymentTaxDataZipTypeEnum::implode() ?>], notnull: true}
     zip: {type: clob, notnull: false}
-    rate: {type: decimal(10), scale: 2, notnull: true}
+    rate: {type: decimal(10), scale: 4, notnull: true}
 #    min_value: {type: decimal(10), scale: 2, notnull: false}
 #    max_value: {type: decimal(10), scale: 2, notnull: false}
 #    surchage: {type: decimal(10), scale: 2, notnull: false}
     shipping: {type:  boolean, notnull: true, default: 0}
-  
+  indexes:
+    country_state:
+      fields: [country, state]
 

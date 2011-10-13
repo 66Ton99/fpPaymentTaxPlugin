@@ -61,7 +61,7 @@ class fpPaymentTaxContext
     }
     
     $tax = fpPaymentTaxDataTable::getInstance()->getTaxByProfileAndProduct($customer->getCusrrentProfile(), $this->item);
-    
-    return $tax->addTaxToValue($this->item->getPrice() * $quntity);
+
+    return $tax->getTaxFromValue($this->item->getPrice() * $quntity);
   }
 }

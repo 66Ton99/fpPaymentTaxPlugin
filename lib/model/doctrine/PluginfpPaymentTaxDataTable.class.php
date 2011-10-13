@@ -22,13 +22,23 @@ class PluginfpPaymentTaxDataTable extends Doctrine_Table
    * Get tax data value by customer profile
    *
    * @param fpPaymentCustomerProfile $profile
-   * @param Product $profile
+   * @param Product $product
    *
    * @return PluginfpPaymentTaxData
    */
   public function getTaxByProfileAndProduct($profile, $product)
   {
-    return $this->createQuery('td')
-      ->fetchOne();
+    $taxDatas = $this->createQuery('td')
+      ->innerJoin('td.fpPaymentTaxToData as ttd')
+        ->andWhere('ttd.tax_id = ?', $product->getTaxId())
+      ->andWhere('td.country = ?', $profile->getCountry())
+      ->andWhere('(td.state = "' . $profile->getState() . '" OR td.state IS NULL OR td.state = "")')
+      ->addOrderBy('td.state DESC, td.zip DESC')
+      ->execute();
+    if (1 == $taxDatas->count()) return $taxDatas->getFirst();
+    /* @var $taxData fpPaymentTaxData */
+    foreach ($taxDatas as $taxData) {
+      var_dump($taxData->toArray());die('OK');
+    }
   }
 }

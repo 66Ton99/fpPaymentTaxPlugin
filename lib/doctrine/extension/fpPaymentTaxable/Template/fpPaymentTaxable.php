@@ -55,8 +55,6 @@ class Doctrine_Template_fpPaymentTaxable extends Doctrine_Template
         }
       }
     }
-    
-    $this->addListener(new Doctrine_Template_Listener_fpPaymentTaxable($this->_options));
   }
   
   /**

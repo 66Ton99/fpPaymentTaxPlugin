@@ -16,6 +16,13 @@ class fpPaymentTaxContext
    * @var Product
    */
   protected $item;
+  
+  /**
+   * Enter description here ...
+   *
+   * @var sfGuardUser
+   */
+  protected $customer;
 
   /**
    * Constructor
@@ -31,6 +38,16 @@ class fpPaymentTaxContext
       throw new sfException('The "' . get_class($item) . '" model item must implement fpPaymentTaxable behavior');
     }
     $this->item = $item;
+    
+    if ($this->customer = $this->getContext()->getCustomer()) {
+      if (!($this->customer instanceof sfDoctrineRecord)) {
+        throw new sfException('The "' . get_class($this->customer) . '" is not model');
+      }
+      if (!$this->customer->getTable()->hasTemplate('fpPaymentProfileble')) {
+        throw new sfException('The "' . get_class($this->customer) . '" model must implement fpPaymentProfileble behavior');
+      }
+    }
+    
   }
   
   /**
@@ -44,6 +61,26 @@ class fpPaymentTaxContext
   }
   
   /**
+   * Get customer
+   *
+   * @return sfGuardUser
+   */
+  public function getCunstomer()
+  {
+    return $this->customer;
+  }
+  
+	/**
+   * Get product item
+   *
+   * @return Product
+   */
+  public function getItem()
+  {
+    return $this->item;
+  }
+  
+  /**
    * Get tax value
    *
    * @param int $quntity
@@ -52,16 +89,11 @@ class fpPaymentTaxContext
    */
   public function getValue($quntity = 1)
   {
-    if(!($customer = $this->getContext()->getCustomer())) return 0.0;
-    if (!($customer instanceof sfDoctrineRecord)) {
-      throw new sfException('The "' . get_class($customer) . '" is not model');
-    }
-    if (!$customer->getTable()->hasTemplate('fpPaymentProfileble')) {
-      throw new sfException('The "' . get_class($customer) . '" model must implement fpPaymentProfileble behavior');
-    }
+    if (!$this->getCunstomer() || !($profile = $this->getCunstomer()->getCurrentBillingProfile())) return 0.00;
     
-    $tax = fpPaymentTaxDataTable::getInstance()->getTaxByProfileAndProduct($customer->getCusrrentProfile(), $this->item);
-
-    return $tax->getTaxFromValue($this->item->getPrice() * $quntity);
+    if ($tax = fpPaymentTaxDataTable::getInstance()->getTaxByProfileAndProduct($profile, $this->getItem())) {
+      return $tax->getTaxFromValue($this->getItem()->getPrice() * $quntity);
+    }
+    return 0.00;
   }
 }

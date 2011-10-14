@@ -25,9 +25,9 @@ fpPaymentTaxData:
     Timestampable: ~
   columns:
     country: {type: string(2), notnull: true}
-    state: {type: string(2), notnull: false}
+    state: {type: string(2), notnull: true, default: ''}
     zip_type: {type: enum, values: [<?php echo fpPaymentTaxDataZipTypeEnum::implode() ?>], notnull: true}
-    zip: {type: clob, notnull: false}
+    zip: {type: clob, notnull: true, default: ''}
     rate: {type: decimal(10), scale: 4, notnull: true}
 #    min_value: {type: decimal(10), scale: 2, notnull: false}
 #    max_value: {type: decimal(10), scale: 2, notnull: false}

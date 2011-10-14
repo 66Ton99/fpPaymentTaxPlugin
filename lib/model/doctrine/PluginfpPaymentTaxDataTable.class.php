@@ -32,13 +32,68 @@ class PluginfpPaymentTaxDataTable extends Doctrine_Table
       ->innerJoin('td.fpPaymentTaxToData as ttd')
         ->andWhere('ttd.tax_id = ?', $product->getTaxId())
       ->andWhere('td.country = ?', $profile->getCountry())
-      ->andWhere('(td.state = "' . $profile->getState() . '" OR td.state IS NULL OR td.state = "")')
-      ->addOrderBy('td.state DESC, td.zip DESC')
+      ->andWhere('(td.state = "' . $profile->getState() . '" OR td.state = "")')
       ->execute();
+      
+    if (empty($taxDatas) || !$taxDatas->count()) return null;
+    
     if (1 == $taxDatas->count()) return $taxDatas->getFirst();
+    
+    $taxesByZip = array();
     /* @var $taxData fpPaymentTaxData */
     foreach ($taxDatas as $taxData) {
-      var_dump($taxData->toArray());die('OK');
+      if ($taxData->isContainedZip($profile->getZip())) {
+        $taxesByZip[] = $taxData;
+      }
     }
+    
+    if (1 == count($taxesByZip)) return array_shift($taxesByZip);
+    
+    if (1 < count($taxesByZip)) {
+      return $this->getTaxFromFewIdentical($taxesByZip);
+    }
+    
+    $taxesWithEmptyState = array();
+    $taxesByState = array();
+    foreach ($taxDatas as $taxData) {
+      if ($taxData->getZip()) continue;
+      if ($taxData->getState() == $profile->getState()) {
+        $taxesByState[] = $taxData;
+      } elseif ('' == $taxData->getState()) {
+        $taxesWithEmptyState[] = $taxData;
+      }
+    }
+    
+    if (1 == count($taxesByState)) return array_shift($taxesByState);
+    if (1 < count($taxesByState)) {
+      return $this->getTaxFromFewIdentical($taxesByState);
+    }
+    
+    if (1 == count($taxesWithEmptyState)) return array_shift($taxesWithEmptyState);
+    if (1 < count($taxesWithEmptyState)) {
+      return $this->getTaxFromFewIdentical($taxesWithEmptyState);
+    }
+    return $this->getTaxFromFewIdentical($taxDatas);
   }
+  
+  /**
+   * Get one tax from few identical
+   *
+   * @param fpPaymentTaxDataTable[] $taxes
+   *
+   * @return fpPaymentTaxDataTable
+   */
+  public function getTaxFromFewIdentical(array $taxes)
+  {
+    $maxTax = null;
+    $maxTaxVal = 0;
+    foreach ($taxes as $taxData) {
+      if ($taxData->getRate() > $maxTaxVal) {
+        $maxTaxVal = $taxData->getRate();
+        $maxTax = $taxData;
+      }
+    }
+    return $maxTax;
+  }
+  
 }

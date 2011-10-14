@@ -24,4 +24,42 @@ abstract class PluginfpPaymentTaxData extends BasefpPaymentTaxData
   {
     return $value * ($this->getRate() / 100);
   }
+  
+  /**
+   * Check zip
+   *
+   * @param string $zip
+   *
+   * @return bool
+   */
+  public function isContainedZip($zip)
+  {
+    $zip = trim($zip);
+    switch ($this->getZipType()) {
+      case fpPaymentTaxDataZipTypeEnum::NONE:
+        return false;
+        
+      case fpPaymentTaxDataZipTypeEnum::SINGLE:
+        return trim($this->getZip()) == $zip;
+        
+      case fpPaymentTaxDataZipTypeEnum::RANGE:
+        $zips = explode('-', $this->getZip());
+        if (2 != count($zips)) {
+          throw new sfException('Wrong range: ' . $this->getZip());
+        }
+        $max = trim(max($zips));
+        $min = trim(min($zips));
+        if ($max >= $zip && $zip >= $min) {
+          return true;
+        }
+        return false;
+        
+      case fpPaymentTaxDataZipTypeEnum::MULTIPLE:
+        foreach (explode(',', $this->getZip()) as $z) {
+          if (trim($z) == $zip) return true;
+        }
+        return false;
+    }
+    throw new sfException('Somthing wrong');
+  }
 }

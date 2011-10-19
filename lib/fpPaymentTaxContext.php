@@ -18,7 +18,7 @@ class fpPaymentTaxContext
   protected $item;
   
   /**
-   * Enter description here ...
+   * Customer
    *
    * @var sfGuardUser
    */
@@ -47,7 +47,6 @@ class fpPaymentTaxContext
         throw new sfException('The "' . get_class($this->customer) . '" model must implement fpPaymentProfileble behavior');
       }
     }
-    
   }
   
   /**
